@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2022浙江大学信号与系统-胡浩基老师</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.4.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #004ea2;
+            --secondary-color: #004ea2;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #2196F3;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif, '宋体';
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #eee;
+            padding-top: 100px;
+        }
+
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+
+        a:visited {
+            color: purple;
+        }
+
+        a:hover {
+            color: blue;
+        }
+
+        a:active {
+            color: blue;
+        }
+
+        p {
+            color: #000;
+        }
+
+        .fixed-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: var(--box-shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .progress-text {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            min-width: 120px;
+        }
+
+        .progress-stats {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .progress-bar-container {
+            flex-grow: 1;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 20px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            width: 0%;
+            transition: var(--transition);
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .header p {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .chapter {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .chapter-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .chapter-header h2 {
+            margin-left: 10px;
+        }
+
+        .lessons-list {
+            padding: 0;
+        }
+
+        .lesson {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #c7d1db;
+            transition: var(--transition);
+        }
+
+        .lesson:last-child {
+            border-bottom: none;
+        }
+
+        .lesson:hover {
+            background-color: #f8f9fa;
+        }
+
+        .lesson-checkbox {
+            position: relative;
+            z-index: 1;
+            margin-right: 10px;
+        }
+
+        .checkbox {
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #adb5bd;
+            border-radius: 50%;
+            margin-right: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .checkbox:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .checkbox:checked::after {
+            content: "✓";
+            color: white;
+            font-size: 14px;
+        }
+
+        .lesson-info {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lesson-title {
+            font-weight: 500;
+            margin-bottom: 3px;
+            margin-right: 30px;
+            flex: 1;
+            width: 400px;
+            max-width: 85ch;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #000;
+        }
+
+        .lesson-duration {
+            color: #666;
+            font-size: 0.85rem;
+            min-width: 70px;
+        }
+
+        #celebration-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .celebration-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .celebration-content h2 {
+            color: #ff1919;
+            margin-top: 0;
+        }
+
+        #close-celebration,
+        #share-celebration {
+            background-color: #4c56af;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 90%;
+                padding: 0 15px;
+            }
+
+            .chapter-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .lesson-title {
+                width: 350px;
+                max-width: 75ch;
+            }
+        }
+
+        @media (max-width: 992px) {
+            body {
+                padding-top: 80px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .chapter-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .lesson-title {
+                width: 300px;
+                max-width: 70ch;
+            }
+
+            .lesson-duration {
+                min-width: 60px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .chapter-header {
+                padding: 12px 15px;
+                font-size: 1.2rem;
+            }
+
+            .lesson {
+                padding: 12px 15px;
+            }
+
+            .lesson-title {
+                width: 250px;
+                max-width: 65ch;
+                font-size: 0.95rem;
+            }
+
+            .lesson-duration {
+                font-size: 0.8rem;
+                min-width: 50px;
+            }
+
+            .progress-text {
+                font-size: 1rem;
+            }
+
+            .progress-stats {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding-top: 70px;
+                font-size: 0.9rem;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .chapter-header {
+                padding: 10px 15px;
+                font-size: 1.1rem;
+            }
+
+            .lesson-title {
+                width: 200px;
+                max-width: 60ch;
+                font-size: 0.9rem;
+            }
+
+            .lesson-duration {
+                display: none;
+            }
+
+            .progress-text {
+                font-size: 0.95rem;
+                min-width: 80px;
+            }
+
+            .progress-bar-container {
+                height: 15px;
+                margin: 0 15px;
+            }
+
+            .progress-bar {
+                height: 100%;
+                border-radius: 8px;
+            }
+
+            .celebration-content {
+                padding: 20px;
+                max-width: 90%;
+            }
+
+            .celebration-content h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部进度条 -->
+    <div class="fixed-progress">
+        <div class="progress-info">
+            <div class="progress-text">进度: <span id="progress-percent">0</span>%</div>
+            <div class="progress-stats"><span id="completed-lessons">0</span> 节课</div>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>浙江大学信号与系统</h1>
+            <p>总时长56:03:09 · 胡浩基老师</p>
+        </div>
+
+        <!-- 第一章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>1. 信号与系统的基本概念</h2>
+            </div>
+            <ul class="lessons-list">
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson1" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">课程简介</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=1" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:32</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson2" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">绪论</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=2" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">46:28</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson3" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">典型的信号</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=3" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">60:16</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson4" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">信号的自变量变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=4" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">44:24</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson5" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">典型的系统</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=5" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:01:34</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第二章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>2. LTI系统的时域分析</h2>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson6" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">线性时不变（LTI）系统的定义</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=6" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">21:23</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson7" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">离散LTI系统卷积公式推导</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=7" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:47:47</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson8" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">离散LTI系统卷积编程</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=8" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">11:53</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson9" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">连续LTI系统卷积公式推导</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=9" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">50:34</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson10" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">冲激函数的性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=10" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:14:57</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson11" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">连续信号卷积的计算</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=11" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:20:47</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson12" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">卷积的性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=12" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:14:49</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第三章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>3. 连续时间信号与系统的频域分析</h2>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson13" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">第三章引言</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=13" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">16:09</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson14" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">第三章引言的MATLAB程序</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=14" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">19:16</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson15" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶级数</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=15" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:18:23</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson16" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶级数收敛性证明（狄利赫里三条件）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=16" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">48:57</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson17" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">函数的正交分解</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=17" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:11:53</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson18" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">函数正交分解例子（主成分分析、哈尔小波、勒让德多项式）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=18" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">14:50</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson19" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶和伽罗华的轶事</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=19" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">06:43</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson20" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶变换的定义</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=20" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">28:03</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson21" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">典型信号的傅里叶变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=21" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:53:35</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson22" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶变换的性质（线性、时移、频移、微分、卷积）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=22" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:39:23</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson23" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">用傅里叶变换计算信号卷积</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=23" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:11:35</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson24" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶变换的调制性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=24" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">21:29</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson25" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">信号的调制与解调</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=25" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:33:40</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson26" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">傅里叶变换的性质（尺度变换、共轭对称、对偶、帕斯瓦尔定理）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=26" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:16:37</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson27" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">理想低通滤波器</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=27" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">44:24</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson28" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">第三章MATLAB程序演示(信号的调制与解调、理想低通滤波器、巴特沃斯滤波器)</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=28" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">53:12</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson29" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">二维信号的傅里叶变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=29" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">10:24</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson30" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">四个不常用的傅里叶变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=30" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">08:01</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson31" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">周期信号的傅里叶级数和傅里叶变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=31" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">43:40</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第四章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>4. 离散时间信号与系统的频域分析</h2>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson32" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">离散傅里叶变换的定义</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=32" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">23:20</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson33" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">典型信号的离散傅里叶变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=33" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:50:42</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson34" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title" title="离散傅里叶变换的性质（线性、频移、时域差分、时域扩展、频域微分、卷积、调制、共轭对称、帕斯瓦尔定理）">
+                            离散傅里叶变换的性质（线性、频移、时域差分、时域扩展、频域微分、卷积、调制、共轭对称、帕斯瓦尔定理）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=34" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">04:13:05</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson35" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">离散信号的傅里叶级数（DFS）和快速傅里叶变换（FFT）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=35" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">02:35:35</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson36" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">用快速傅里叶变换（FFT）计算两个序列的卷积</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=36" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">41:39</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson37" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">快速傅里叶变换（FFT）的MATLAB程序</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=37" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">29:47</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第五章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>5. 采样、调制与通信系统</h2>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson38" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">采样定理导引</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=38" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">39:17</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson39" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">采样定理证明</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=39" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:37:42</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson40" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">零阶和一阶保持</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=40" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">23:28</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson41" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">连续系统的离散实现</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=41" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">21:36</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson42" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">编程练习：打印自己声音的频谱</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=42" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">17:58</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson43" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">采样定理例题讲解</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=43" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">27:36</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson44" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">希尔伯特变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=44" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">46:43</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第六章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>6. 信号与系统的复频域分析</h2>
+            </div>
+            <ul class="lessons-list">
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson45" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">拉普拉斯变换定义</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=45" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">22:01</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson46" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">两个重要信号的拉普拉斯变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=46" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">38:13</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson47" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">拉普拉斯变换的收敛域性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=47" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">36:29</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson48" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">常见信号的拉普拉斯变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=48" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">10:53</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson49" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">拉普拉斯变换的性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=49" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">58:39</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson50" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">因果信号拉式变换的初值定理和终值定理</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=50" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">16:55</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson51" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">周期信号的拉普拉斯变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=51" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">11:22</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson52" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">常微分方程的三种表达形式（方程形式、系统函数形式、框图形式）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=52" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:08:36</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson53" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">用拉普拉斯变换解常微分方程</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=53" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:41:00</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 第七章 -->
+        <div class="chapter">
+            <div class="chapter-header">
+                <h2>7. 离散时间信号与系统的Z域分析</h2>
+            </div>
+            <ul>
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson54" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">Z变换定义</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=54" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">08:09</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson55" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">两个重要信号的Z变换</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=55" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">35:01</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson56" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">Z变换的收敛域性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=56" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">42:54</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson57" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">Z变换的性质</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=57" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:16:04</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson58" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">因果信号Z变换的初值定理和终值定理</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=58" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">11:50</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson60" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">差分方程的三种表达形式（方程形式、系统函数形式、框图形式）</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=60" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">50:22</div>
+                    </div>
+                </li>
+
+                <li class="lesson">
+                    <input type="checkbox" class="checkbox" id="lesson60" onchange="updateProgress()">
+                    <div class="lesson-info">
+                        <div class="lesson-title">用Z变换解差分方程</div>
+                        <div class="lesson-link">
+                            <a href="https://www.bilibili.com/video/BV1g94y1Q76G?t=0&p=60" target="_blank">
+                                <i class="fas fa-link"></i> 视频链接
+                            </a>
+                        </div>
+                        <div class="lesson-duration">01:29:35</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div id="celebration-popup" onclick="handlePopupClick(event)">
+        <div class="celebration-content">
+            <h2>🥳恭喜🎉</h2>
+            <p>您已完成全部课程!</p>
+            <button id="close-celebration">确定</button>
+            <button id="share-celebration">分享</button>
+        </div>
+    </div>
+
+    <div id="share-preview"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="position: relative; max-width: 90%; max-height: 90%;">
+            <img id="preview-image"
+                style="max-width: 100%; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.2);">
+            <div
+                style="position: absolute; bottom: -60px; width: 100%; display: flex; justify-content: center; gap: 20px;">
+                <button id="cancel-share"
+                    style="padding: 10px 20px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 24px; color: #333; cursor: pointer; font-size: 14px;">取消</button>
+                <button id="confirm-share"
+                    style="padding: 10px 20px; background-color: #1890ff; color: white; border: none; border-radius: 24px; cursor: pointer; font-size: 14px;">分享</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const totalCount = checkboxes.length;
+            let completedCount = 0;
+            let totalDuration = 0;
+            let completedDuration = 0;
+
+            checkboxes.forEach((checkbox, index) => {
+                const durationElement = checkbox.closest('.lesson').querySelector('.lesson-duration');
+                const durationText = durationElement.textContent.replace(/$|$/g, '').trim();
+                const duration = parseDuration(durationText);
+                totalDuration += duration;
+
+                if (checkbox.checked) {
+                    completedCount++;
+                    completedDuration += duration;
+                }
+                localStorage.setItem(`lesson-${index + 1}`, checkbox.checked);
+            });
+
+            let percent = (completedDuration / totalDuration * 100);
+            percent = Number.isInteger(percent) ? percent.toString() : percent.toFixed(1);
+
+            document.getElementById('progress-percent').textContent = percent;
+            document.getElementById('completed-lessons').textContent = `${completedCount}/${totalCount}`;
+            document.getElementById('progress-bar').style.width = percent + '%';
+
+            localStorage.setItem('course-progress', JSON.stringify({
+                completedCount: completedCount,
+                totalCount: totalCount,
+                completedDuration: completedDuration,
+                totalDuration: totalDuration,
+                percent: percent
+            }));
+
+            if (percent >= 100) {
+                showCelebration();
+            }
+        }
+
+        function parseDuration(duration) {
+            const parts = duration.split(':').map(Number);
+            if (parts.length === 2) {
+                return parts[0] * 60 + parts[1];
+            } else if (parts.length === 3) {
+                return parts[0] * 3600 + parts[1] * 60 + parts[2];
+            }
+            return 0;
+        }
+
+        function showCelebration() {
+            const celebrationPopup = document.getElementById('celebration-popup');
+            celebrationPopup.style.display = 'flex';
+
+            setupShareButton();
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const createFireworks = (count, velocity, spread, colors) => {
+                confetti({
+                    particleCount: count,
+                    startVelocity: velocity,
+                    spread: spread,
+                    origin: {
+                        x: Math.random(),
+                        y: 1.0
+                    },
+                    colors: colors
+                });
+            };
+
+            const fireworkConfigs = [
+                { count: 300, velocity: 30, spread: 180, colors: ['#ff4d4d', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0'] },
+                { count: 200, velocity: 25, spread: 360, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'] },
+                { count: 250, velocity: 35, spread: 360, colors: ['#ff4d4d', '#4CAF50', '#2196F3', '#FFC107', '#9C27B0'] },
+                { count: 220, velocity: 40, spread: 270, colors: ['#ff6600', '#00cc66', '#3399ff', '#ffcc00', '#cc33ff'] },
+                { count: 280, velocity: 30, spread: 360, colors: ['#ff3333', '#66ff33', '#3366ff', '#ffff33', '#ff33ff'] }
+            ];
+
+            fireworkConfigs.forEach((config, index) => {
+                setTimeout(() => {
+                    createFireworks(config.count, config.velocity, config.spread, config.colors);
+                }, index * 500);
+            });
+        }
+
+        function handlePopupClick(event) {
+            const celebrationPopup = document.getElementById('celebration-popup');
+            const celebrationContent = celebrationPopup.querySelector('.celebration-content');
+
+            if (event.target === celebrationPopup || !celebrationContent.contains(event.target)) {
+                celebrationPopup.style.display = 'none';
+            }
+        }
+
+        function setupShareButton() {
+            const shareButton = document.getElementById('share-celebration');
+            if (shareButton) {
+                shareButton.onclick = function (e) {
+                    e.stopPropagation();
+                    generateShareImage();
+                    document.getElementById('celebration-popup').style.display = 'none';
+                };
+            }
+        }
+
+        function generateShareImage() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = 840;
+            canvas.height = 472;
+
+            const bgImage = new Image();
+            bgImage.src = 'xhyxt_zju_2022.png';
+
+            bgImage.onload = function () {
+                ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.font = 'bold 48px 黑体';
+                ctx.fillStyle = '#d82626';
+                ctx.textAlign = 'center';
+                ctx.fillText('🎉 恭喜您学完所有课程! 🎉', canvas.width / 2, 300);
+
+                const now = new Date();
+                const timeString = now.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                ctx.font = '24px 宋体';
+                ctx.fillStyle = '#fff';
+                ctx.fillText(`完成时间: ${timeString}`, canvas.width / 2, canvas.height - 120);
+                const dataURL = canvas.toDataURL('image/png');
+
+                const preview = document.getElementById('share-preview');
+                const previewImage = document.getElementById('preview-image');
+
+                previewImage.src = dataURL;
+                preview.style.display = 'flex';
+
+                document.getElementById('confirm-share').onclick = function () {
+                    copyImageToClipboard(dataURL);
+                    preview.style.display = 'none';
+                    alert('图片已复制到剪贴板，可以粘贴分享');
+                };
+
+                document.getElementById('cancel-share').onclick = function () {
+                    preview.style.display = 'none';
+                };
+            };
+
+            bgImage.onerror = function () {
+                console.error('背景图片加载失败，使用默认背景');
+                generateShareImageWithDefaultBg();
+            };
+        }
+
+        function generateShareImageWithDefaultBg() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 840;
+    canvas.height = 472;
+
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.beginPath();
+    ctx.moveTo(40, 70);
+    ctx.lineTo(canvas.width - 40, 70);
+    ctx.strokeStyle = '#FF6B6B';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.font = 'bold 48px "Microsoft YaHei", "微软雅黑", sans-serif';
+    ctx.fillStyle = '#FF6B6B';
+    ctx.textAlign = 'center';
+    ctx.fillText('🎉 恭喜学完所有课程! 🎉', canvas.width / 2, 160);
+
+    ctx.font = 'bold 24px "SimHei", "黑体", sans-serif';
+    ctx.fillStyle = '#333';
+    ctx.fillText('2022浙江大学信号与系统 - 胡浩基老师', canvas.width / 2, 220);
+
+    ctx.beginPath();
+    ctx.moveTo(40, 260);
+    ctx.lineTo(canvas.width - 40, 260);
+    ctx.strokeStyle = '#FF6B6B';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.font = '20px "宋体", serif';
+    ctx.fillStyle = '#222';
+    ctx.fillText(`完成时间: ${new Date().toLocaleString('zh-CN', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    })}`, canvas.width / 2, 320);
+
+    ctx.font = '16px "SimSun", "宋体", serif';
+    ctx.fillStyle = '#999';
+    ctx.fillText('哔哩哔哩课程认证', canvas.width / 2, 370);
+
+    ctx.fillStyle = '#FF6B6B';
+    ctx.beginPath();
+    ctx.arc(100, 370, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(canvas.width - 100, 370, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    const dataURL = canvas.toDataURL('image/png');
+
+    const preview = document.getElementById('share-preview');
+    const previewImage = document.getElementById('preview-image');
+
+    previewImage.src = dataURL;
+    preview.style.display = 'flex';
+
+    document.getElementById('confirm-share').onclick = function () {
+        copyImageToClipboard(dataURL);
+        preview.style.display = 'none';
+        alert('图片已复制到剪贴板，可以粘贴分享');
+    };
+
+    document.getElementById('cancel-share').onclick = function () {
+        preview.style.display = 'none';
+    };
+}
+
+        function copyImageToClipboard(dataURL) {
+            const img = new Image();
+            img.src = dataURL;
+
+            img.onload = function () {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+
+                try {
+                    canvas.toBlob(function (blob) {
+                        const item = new ClipboardItem({ 'image/png': blob });
+                        navigator.clipboard.write([item]).then(function () {
+                            console.log('图片已复制到剪贴板');
+                        }).catch(function (err) {
+                            console.error('复制失败:', err);
+                            fallbackCopy(dataURL);
+                        });
+                    });
+                } catch (err) {
+                    console.error('Clipboard API不可用:', err);
+                    fallbackCopy(dataURL);
+                }
+            };
+        }
+
+        function fallbackCopy(dataURL) {
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = '课程完成证书.png';
+
+            const textarea = document.createElement('textarea');
+            textarea.value = dataURL;
+            document.body.appendChild(textarea);
+
+            textarea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('图片数据已复制到剪贴板（数据URL格式），可以粘贴到支持的地方');
+                } else {
+                    alert('复制失败，请手动复制');
+                }
+            } catch (err) {
+                alert('复制失败，请手动复制');
+            }
+
+            document.body.removeChild(textarea);
+        }
+
+        function handlePopupClick(event) {
+            const celebrationPopup = document.getElementById('celebration-popup');
+            const celebrationContent = celebrationPopup.querySelector('.celebration-content');
+            const shareButton = document.getElementById('share-celebration');
+
+            if (event.target === celebrationPopup ||
+                (celebrationContent && !celebrationContent.contains(event.target))) {
+                celebrationPopup.style.display = 'none';
+            }
+
+        }
+
+        window.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const totalCount = checkboxes.length;
+            let completedCount = 0;
+            let totalDuration = 0;
+            let completedDuration = 0;
+
+            checkboxes.forEach((checkbox, index) => {
+                const durationElement = checkbox.closest('.lesson').querySelector('.lesson-duration');
+                const durationText = durationElement.textContent.replace(/$|$/g, '').trim();
+                const duration = parseDuration(durationText);
+                totalDuration += duration;
+
+                const savedState = localStorage.getItem(`lesson-${index + 1}`);
+                if (savedState === 'true') {
+                    checkbox.checked = true;
+                    completedCount++;
+                    completedDuration += duration;
+                }
+                checkbox.addEventListener('change', updateProgress);
+            });
+
+            const savedProgress = localStorage.getItem('course-progress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                document.getElementById('progress-percent').textContent = progress.percent;
+                document.getElementById('completed-lessons').textContent = `${progress.completedCount}/${progress.totalCount}`;
+                document.getElementById('progress-bar').style.width = progress.percent + '%';
+
+                if (progress.percent >= 100) {
+                    showCelebration();
+                }
+            } else {
+
+                let percent = (completedDuration / totalDuration * 100);
+                percent = Number.isInteger(percent) ? percent.toString() : percent.toFixed(1);
+                document.getElementById('progress-percent').textContent = percent;
+                document.getElementById('completed-lessons').textContent = `${completedCount}/${totalCount}`;
+                document.getElementById('progress-bar').style.width = percent + '%';
+            }
+
+            checkboxes.forEach((checkbox, index) => {
+                if (!checkbox.hasAttribute('onchange')) {
+                    checkbox.addEventListener('change', updateProgress);
+                }
+            });
+        });
+
+        document.getElementById('close-celebration').addEventListener('click', function () {
+            document.getElementById('celebration-popup').style.display = 'none';
+        });
+
+        setupShareButton();
+    </script>
+</body>
+
+</html>
